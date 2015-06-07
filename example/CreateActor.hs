@@ -1,9 +1,6 @@
 
 module Main where
 
-import qualified LexCAL as C
-import qualified ParCAL as C
-import qualified SkelCAL as C
 import qualified PrintCAL as C
 import qualified AbsCAL as C
 
@@ -19,10 +16,8 @@ actor = actorAST
       priorityBlock = []
       actorPar      = []
       imports       = []
-      varDecl       = [ C.VDecl inType  (C.Ident "i") [] ]
+      varDecl       = [ C.VDecl (intCalType 8)  (C.Ident "i") [] ]
       ioSig         = C.IOSg [C.PortDcl (intCalType 8) (C.Ident "In")] [C.PortDcl (intCalType 8) (C.Ident "Out")]
-      inType        = C.TypParam C.TUint [C.TypeAttrSizeDf (C.LitExpCons (C.IntLitExpr (C.IntegerLit 8)))]
-      outType       = C.TypParam C.TUint [C.TypeAttrSizeDf (C.LitExpCons (C.IntLitExpr (C.IntegerLit 8)))]
       inputPattern  = [ C.InPattTagIds (C.Ident "In") [(C.Ident "x")] ]
       outputPattern = [ C.OutPattTagIds (C.Ident "Out") [(C.Ident "i")] ]
       actionHead    = C.ActnHead inputPattern outputPattern
