@@ -14,3 +14,17 @@ cabal.sandbox.config
 *.prof
 *.aux
 *.hp
+*.bak
+*.y
+*.x
+AbsCAL.hs
+DocCAL.txt
+LexCAL.hs
+SkelCAL.hs
+ParCAL.hs
+PrintCAL.hs
+TestCAL.hs
+TestCAL
+ErrM.hs
+Makefile
+*_flymake.hs

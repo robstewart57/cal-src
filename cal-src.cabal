@@ -1,0 +1,25 @@
+
+name:                cal-src
+version:             0.1.0.0
+synopsis:            CAL language parser & pretty-printer Haskell library
+license:             GPL-3
+license-file:        LICENSE
+author:              Rob Stewart
+maintainer:          robstewart57@gmail.com
+category:            Language
+build-type:          Custom
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  exposed-modules:     AbsCAL
+                     , LexCAL
+                     , ParCAL
+                     , PrintCAL
+                     , SkelCAL
+                    
+  build-depends:       base >=4.8 && <=4.9
+                     , BNFC
+                     , array
+
+  default-language:    Haskell2010

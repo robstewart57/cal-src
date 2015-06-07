@@ -1,0 +1,294 @@
+-- Author: Rob Stewart
+-- Description:
+--   This is a BNF grammar formalism of the CAL actor language.
+--   It is based on Annex D of the Internation Standard ISO/IEC 23001-4,
+--   "Information technology — MPEG systems technologies -
+--    Part 4: Codec configuration representation 3rd edition",
+--   with modifications to conform to expectations of the CAL
+--   frontend of the Orcc compiler.
+
+comment "//" ;
+comment "/*" "*/" ;
+
+entrypoints Actor, Unit ;
+
+ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [VarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\nend" ;
+Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [VarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\n\nend" ;
+ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [VarDecl] [AnAction] ActionSchedule [PriorityBlock] "end" ;
+
+PathN. PathName ::= [PName] ";" ;
+PNameCons. PName ::= Ident;
+(:[]). [PName] ::= PName;
+(:). [PName] ::= PName "." [PName];
+
+separator nonempty Ident ",";
+
+Imprt. Import ::= "import" [Ident];
+ImprtWC. Import ::= "import" [Ident] ".*";
+terminator Import ";" ;
+
+ActrPar. ActorPar ::= Type Ident EqualsExp ;
+separator ActorPar ",";
+
+IOSg. IOSig ::= [PortDecl] "==>" [PortDecl] ;
+
+{- TODO: Annotation not defined in spec -}
+{- PortDcl. PortDecl ::= [Annotation] Type Ident ; -}
+PortDcl. PortDecl ::= Type Ident ;
+separator PortDecl "," ;
+
+EqNoExp. EqualsExp ::= ;
+EqExp. EqualsExp ::= "=" Exp ;
+
+TypNonParam. Type ::= NonParamType ;
+TypParam. Type ::= ParamType "(" [TypeAttrDef] ")" ;
+
+TypeAttrTypeDf. TypeAttrDef ::= "type" ":" Type;
+TypeAttrSizeDf. TypeAttrDef ::= "size" "=" Exp ;
+separator TypeAttrDef ",";
+
+TBool. NonParamType ::= "bool" ;
+TString. NonParamType ::= "String" ;
+TFloat. NonParamType ::= "float" ;
+TList. ParamType ::= "List" ;
+TInt. ParamType ::= "int" ;
+TUint. ParamType ::= "uint" ;
+
+Unt. Unit ::= "package" Ident ";\n"  [Import] "unit" Ident ":" [UnitDecl] "end" ;
+
+UFunDecl. UnitDecl ::= FunctionDecl ;
+UPrcDecl. UnitDecl ::= ProcDecl ;
+UConstVarDecl. UnitDecl ::= ConstantVarDecl ;
+terminator nonempty UnitDecl ";";
+
+VDecl. VarDecl ::= Type Ident [BracketedExp] ;
+VDeclExpIMut. VarDecl ::= Type Ident [BracketedExp] "=" Exp ;
+VDeclExpMut. VarDecl ::= Type Ident [BracketedExp] ":=" Exp ;
+terminator VarDecl ";" ; -- does this fit with the CAL spec?
+
+{- TODO: StateVarDecl is not used anywhere else in the spec -}
+{- SVarDecl. StateVarDecl ::= VarDecl ; -}
+
+{- NOTE: below is what the spec says, I am using the second. -}
+-- ConstVarDecl. ConstantVarDecl ::= Type Ident BracketedExp "=" Exp ;
+ConstVarDecl. ConstantVarDecl ::= Type Ident "=" Exp ;
+
+BExp. BracketedExp ::= "[" Exp "]" ;
+separator BracketedExp "" ;
+
+FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type ExplicitVarDecl ":" Exp "end" ;
+
+FNVarDecl. ExplicitVarDecl ::= ;
+FVarDecl. ExplicitVarDecl ::= "var" VarDecl ;
+
+PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "end" ;
+
+{- TODO: FormalPar is not specified in spec, what should it be? -}
+TmpPar. FormalPar ::= String;
+separator FormalPar "," ;
+
+{- TODO: what about unary expressions from D.6.5.4 ? -}
+{- TODO: BinaryExp is not explicit in spec -}
+-- BiExp. Exp ::= BinaryExp ;
+-- SiExp. Exp ::= SingleExp ;
+
+separator Exp "," ;
+
+{- There are two kinds of operators in RVC-CAL: unary prefix operators
+and binary infix operators. A binary operator is characterized by its
+associativity and its precedence. In RVC-CAL, all binary operators
+associate to the left, while their precedence is defined by the
+platform, and have fixed predefined values for built-in operators
+(which are used to work on instances of built-in types). Unary
+operators always take precedence over binary operators. -}
+
+{- TODO: Operator not defined in spec -}
+-- OpExp. Exp ::= Operator Exp ;
+LstExpCons. Exp ::= ListComprehension ;
+IfExpCons. Exp ::= IfExp ;
+-- LetExpCons. Exp ::= LetExp ;
+BrExpCons. Exp ::= "(" Exp ")" ;
+IndSExpCons. Exp ::= IndexerExpr ;
+IdBrSExpCons. Exp ::= Ident "(" [Exp] ")" ;
+LitExpCons. Exp ::= ExpLiteral ;
+
+{- TODO: SimpleExp is not defined in spec -}
+{- TmpSimp. SimpleExp ::= ?  ; -}
+
+{- TODO: LetExp is not defined in spec -}
+{- TmpLet. LetExp ::= ? ; -}
+
+{- TODO: Described as Integer in D.3.2, should be IntegerLiteral -}
+IntegerLit. IntegerLiteral ::=  Integer ;
+IntegerDecLit. IntegerLiteral ::=  DecimalLiteral ;
+IntegerHexLit. IntegerLiteral ::=  HexadecimalLiteral ;
+IntegerOctLit. IntegerLiteral ::=  OctalLiteral ;
+
+token DecimalLiteral ["123456789"] ["0123456789"]* ;
+token HexadecimalLiteral '0' ('x'|'X') (digit | ["abcdef"] | ["ABCDEF"])+;
+
+{- TODO: goes up to 8, not 7, in spec -}
+token OctalLiteral '0'["01234567"]*;
+
+{- TODO: OperatorExp is not defined -}
+{- TmpOpExp. OperatorExp ::= ? ; -}
+
+{- TODO: StringLiteral is not defined in spec, the following is assumed -}
+StringLit. StringLiteral ::= String ;
+
+IntLitExpr. ExpLiteral ::= IntegerLiteral ;
+StrLitExpr. ExpLiteral ::= StringLiteral ;
+TrueLitExpr. ExpLiteral ::= "true" ;
+FalseLitExpr. ExpLiteral ::= "flase" ;
+
+IndExpr. IndexerExpr ::= Ident "[" Exp "]" BracketedExp ;
+
+IfExpr. IfExp ::= "if" Exp "then" Exp "else" Exp "end" ;
+
+{- TODO: not used elsewhere -}
+{- SimpleListComp. SimpleListComprehension ::= "[" [Exp] "]" ; -}
+
+ListComp. ListComprehension ::= "[" ListExpr "]" ;
+
+ListExp. ListExpr ::= [Exp] ;
+ListExpGen. ListExpr ::= [Exp] GeneratorExp ;
+ListExpGuard. ListExpr ::= [Exp] GuardExp ;
+ListExpGenGuard. ListExpr ::= [Exp] GeneratorExp GuardExp ;
+
+GenExpr. GeneratorExp ::= ":" [Generator] ;
+GeneratorExpr. Generator ::= "for" Type Ident "in" Exp ;
+separator Generator "," ;
+
+GuardExpr. GuardExp ::= "|" Exp ;
+
+SemiColonSepartedStmt. Statement ::= SemiColonSeparatedStatement ";" ;
+EndSeparatedStmt. Statement ::= EndSeparatedStatement ;
+separator Statement "" ;
+
+AssignStt. SemiColonSeparatedStatement ::= AssignmentStmt ;
+CallStt. SemiColonSeparatedStatement ::= CallStmt ;
+BlockStt. SemiColonSeparatedStatement ::= BlockStmt ;
+IfStt. SemiColonSeparatedStatement ::= IfStmt ;
+WhileStt. SemiColonSeparatedStatement ::= WhileStmt ;
+
+ForEachStt. EndSeparatedStatement ::= ForeachStmt ;
+
+AssStmt. AssignmentStmt ::= Ident ":=" Exp ;
+AssStmtIdx. AssignmentStmt ::= Ident Index ":=" Exp ;
+{- NOTE: I have removed this, which is in spec, replacing with alternative rule -}
+-- Idx. Index ::= "[" [Exp] "]" BracketedExp ;
+Idx. Index ::= BracketedExp ;
+
+CllStmt. CallStmt ::= ProcedureSymbol "(" [Exp] ")" ;
+ProcSymb. ProcedureSymbol ::= Ident ;
+
+BlkStmt. BlockStmt ::= "begin" [Statement] "end" ;
+BlkVarsStmt. BlockStmt ::= "begin" LocalVarsDoDecl [Statement] "end" ;
+
+IfOneSt. IfStmt ::= "if" Exp "then" [Statement] "end" ;
+IfSt. IfStmt ::= "if" Exp "then" [Statement] "else" [Statement] "end" ;
+
+WhileSt. WhileStmt ::= "while" Exp "do" [Statement] "end" ;
+WhileVarsSt. WhileStmt ::= "while" Exp LocalVarsDecl"do" [Statement] "end" ;
+
+LocVarsDoDecl. LocalVarsDoDecl ::= "var" [VarDecl] "\ndo" ;
+LocVarsDecl. LocalVarsDecl ::= "var" [VarDecl] ;
+
+ForeachEmptySt. ForeachStmt ::= [ForeachGenerator] "do" "end" ;
+ForeachVarsSt. ForeachStmt ::= [ForeachGenerator] LocalVarsDecl "do" "end" ;
+ForeachVarsStmtsSt. ForeachStmt ::= [ForeachGenerator] LocalVarsDecl "do" [Statement] "end" ;
+{- NOTE: I have added this beyond CAL spec -}
+ForeachStmtsSt. ForeachStmt ::= [ForeachGenerator] "do" [Statement] "end" ; 
+
+ForeachGen. ForeachGenerator ::= "foreach" Type Ident "in" Exp ;
+separator nonempty ForeachGenerator "," ;
+
+AnActn. AnAction ::= Action ;
+InitActn. AnAction ::= InitializationAction ;
+separator AnAction "" ;
+
+Actn. Action ::= "action" ActionHead "end" ;
+ActnTags. Action ::= ActionTagDecl "action" ActionHead "end" ;
+ActnTagsStmts. Action ::= ActionTagDecl "action" ActionHead "do" [Statement] "end" ;
+
+ActnTagDecl. ActionTagDecl ::= [Ident] ":" ;
+
+ActnHead. ActionHead ::= [InputPattern] "==>" [OutputExp] ;
+ActnHeadGuarded. ActionHead ::= [InputPattern] "==>" [OutputExp] "guard" [Exp];
+ActnHeadVars. ActionHead ::= [InputPattern] "==>" [OutputExp] LocalVarsDecl ;
+ActnHeadGuardedVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "guard" [Exp] LocalVarsDecl ;
+
+InPattTag. InputPattern ::= Ident ":" ;
+InPattTagIds. InputPattern ::= Ident ":" "[" [Ident] "]" ;
+InPattTagIdsRepeat. InputPattern ::= Ident ":" "[" [Ident] "]" RepeatClause ;
+separator InputPattern "," ;
+
+{- NOTE: defined as OutputPattern in spec -}
+OutPattTag. OutputExp ::= Ident ":" ;
+OutPattTagIds. OutputExp ::= Ident ":" "[" [Ident] "]" ;
+OutPattTagIdsRepeat. OutputExp ::= Ident ":" "[" [Ident] "]" RepeatClause ;
+separator OutputExp "," ;
+
+RptClause. RepeatClause ::= "repeat" Exp ;
+
+IActn. InitializationAction ::= "initialize" InitializerHead "end" ;
+IActnTag. InitializationAction ::= ActionTagDecl "initialize" InitializerHead "end" ;
+IActnTagStmt. InitializationAction ::= ActionTagDecl "initialize" InitializerHead "do" [Statement] "end" ;
+
+InitHead. InitializerHead ::= "==>" [OutputExp] ;
+InitHeadGuard. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] ;
+InitHeadGuardVars. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] "var" [VarDecl] ;
+
+{- NOTE: this is ActionSchedule in spec -}
+SchedFSM. ActionSchedule ::= "schedule" Ident ":" [StateTransition] "end" ;
+SchedfsmFSM. ActionSchedule ::= "schedule" "fsm" Ident ":" [StateTransition] "end" ;
+
+StTrans. StateTransition ::= Ident "(" Ident ")" "-->" Ident ;
+terminator StateTransition ";" ;
+
+{- NOTE: this is PriorityOrder in spec -}
+PriOrd. PriorityBlock ::= "priority" [PriorityInequality] "end" ;
+PriInEQ. PriorityInequality ::= Ident ">" Ident [OptActTag] ;
+separator PriorityBlock "" ;
+
+OpActTg. OptActTag ::= ">" Ident ;
+separator OptActTag "";
+
+separator PriorityInequality ";" ;
+
+{- binary operations -}
+BEAnd. Exp   ::= Exp "and" Exp2;
+BEOr. Exp   ::= Exp "or" Exp2;
+BEEQ. Exp2   ::= Exp2 "=" Exp3;
+BENEq. Exp2   ::= Exp2 "!=" Exp3;
+BELT. Exp2   ::= Exp2 "<" Exp3;
+BELTE. Exp2   ::= Exp2 "<=" Exp3;
+BEGT. Exp2   ::= Exp2 ">" Exp3;
+EGTE. Exp2   ::= Exp2 ">=" Exp3;
+BEAdd. Exp3   ::= Exp3 "+" Exp4;
+BEConc. Exp3   ::= Exp3 "++" Exp4;
+BENeg. Exp3   ::= Exp3 "-" Exp4;
+BEIntDiv. Exp4   ::= Exp4 "div" Exp5;
+BEMod. Exp4   ::= Exp4 "mod" Exp5;
+BEMult. Exp4   ::= Exp4 "*" Exp5;
+BEDiv. Exp4   ::= Exp4 "/" Exp5;
+BEList. Exp5   ::= Exp5 ".." Exp6;
+BEBWAnd. Exp6   ::= Exp6 "&" Exp7;
+BEBWOr. Exp6   ::= Exp6 "|" Exp7;
+BEBWXor. Exp6   ::= Exp6 "^" Exp7;
+BEBWNot. Exp6   ::= Exp6 "~" Exp7;
+BEBSLeft. Exp6   ::= Exp6 "<<" Exp7;
+BEBSRight. Exp6   ::= Exp6 ">>" Exp7;
+
+{- unary operations -}
+UEBNot. Exp7 ::= "bitnot" Exp7 ;
+UENot. Exp7 ::= "not" Exp7 ;
+UENeg. Exp7 ::= "-" Exp7 ;
+UEIdx. Exp7 ::= "#" Exp7 ;
+UEFoI. Exp7 ::= "float_of_int" "(" Exp7 ")" ;
+UEIoF. Exp7 ::= "int_of_float" "(" Exp7 ")" ;
+UEUIoF. Exp7 ::= "uint_of_float" "(" Exp7 ")" ;
+EIdent. Exp7 ::= Ident ;
+EIdentArr. Exp7 ::= Ident BracketedExp ;
+
+coercions Exp 7;
