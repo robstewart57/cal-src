@@ -28,3 +28,5 @@ TestCAL
 ErrM.hs
 Makefile
 *_flymake.hs
+CreateActor
+my_actor.cal

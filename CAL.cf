@@ -161,7 +161,7 @@ separator Generator "," ;
 
 GuardExpr. GuardExp ::= "|" Exp ;
 
-SemiColonSepartedStmt. Statement ::= SemiColonSeparatedStatement ";" ;
+SemiColonSeparatedStmt. Statement ::= SemiColonSeparatedStatement ";" ;
 EndSeparatedStmt. Statement ::= EndSeparatedStatement ;
 separator Statement "" ;
 
