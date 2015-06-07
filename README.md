@@ -1,16 +1,16 @@
-## CAL components for C, C++, C#, Haskell, Java & OCaml
+## CAL component generation for compilers
 
 This repository contains `CAL.cf`, a labelled BNF grammar file
-defining syntax of the CAL actor programming language. It is based on
-Annex D of the Internation Standard ISO/IEC 23001-4, *Information
-technology — MPEG systems technologies - Part 4: Codec configuration
-representation 3rd edition*, with modifications to conform to
-expectations of the CAL frontend of the Orcc compiler.
+defining syntax of the CAL actor programming language. The [BNFC]
+software generates compiler components for C, C++, C#, Haskell, Java,
+and OCaml, i.e. compilers written in these languages can parse and
+generate CAL actor source code.
 
-The `CAL.cf` file is in the correct format for the `BNFC` software,
-which is a frontend generator for C, C++, C#, Haskell, Java, and
-OCaml. BNFC generates components in these langauges, to use CAL as a
-frontend or a backend in a source to source compiler. The `bnfc`
+The labelled BNF rules are based on Annex D of the Internation
+Standard ISO/IEC 23001-4, *Information technology — MPEG systems
+technologies - Part 4: Codec configuration representation 3rd
+edition*, with modifications to conform to expectations of the CAL
+frontend of the Orcc compiler. From these BNF rules, the `bnfc`
 executable generates:
 
 * an abstract syntax implementation
@@ -19,6 +19,9 @@ executable generates:
 * a Happy, CUP, or Bison parser generator file
 * a pretty-printer as a Haskell/Java/C++/C module
 * a Latex file containing a readable specification of the language
+
+More information about BNFC is at
+[http://bnfc.digitalgrammars.com](http://bnfc.digitalgrammars.com).
 
 ## CAL frontend/backend for source-to-source compilers
 
@@ -30,9 +33,6 @@ embedded processors, and also supports writing new CAL backends. This
 is shown here:
 
 <img src="https://raw.githubusercontent.com/robstewart57/cal-src/master/images/to-from-cal.png" width="460">
-
-More information about BNFC is at
-[http://bnfc.digitalgrammars.com](http://bnfc.digitalgrammars.com).
 
 ## Example: generating a CAL actor via Haskell
 
@@ -97,7 +97,7 @@ frontend or a backend. Once in the repository, simply run:
 Once you add `cal-src` as a build depdendency in your cabal-ised
 project, you should be able to import all relevant modules, i.e.
 
-```
+```haskell
 import qualified LexCAL as C
 import qualified ParCAL as C
 import qualified SkelCAL as C
