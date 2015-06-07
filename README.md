@@ -1,17 +1,18 @@
 ## CAL component generation for compilers
 
 This repository contains `CAL.cf`, a labelled BNF grammar file
-defining syntax of the CAL actor programming language. The [BNFC]
-software generates compiler components for C, C++, C#, Haskell, Java,
-and OCaml, i.e. compilers written in these languages can parse and
-generate CAL actor source code.
+defining syntax of the CAL actor programming language. The
+[BNFC](http://bnfc.digitalgrammars.com) software generates compiler
+components for C, C++, C#, Haskell, Java, and OCaml, i.e. compilers
+written in these languages can parse and generate CAL actor source
+code.
 
 The labelled BNF rules are based on Annex D of the Internation
 Standard ISO/IEC 23001-4, *Information technology — MPEG systems
 technologies - Part 4: Codec configuration representation 3rd
 edition*, with modifications to conform to expectations of the CAL
-frontend of the Orcc compiler. From these BNF rules, the `bnfc`
-executable generates:
+frontend of the [Orcc compiler](http://orcc.sourceforge.net). From
+these BNF rules, the `bnfc` executable generates:
 
 * an abstract syntax implementation
 * a case skeleton for the abstract syntax in the same language
