@@ -3,10 +3,10 @@ import Distribution.PackageDescription
 import Distribution.Simple
 import Distribution.Simple.Setup (BuildFlags)
 
-import BNFC.GetCF
-import BNFC.Options
-import BNFC.Backend.Base (writeFiles)
-import BNFC.Backend.Haskell
+import BNFC.GetCF (parseCF)
+import BNFC.Options (Target(TargetHaskell), defaultOptions, lang)
+import BNFC.Backend.Base ( writeFiles)
+import BNFC.Backend.Haskell (makeHaskell)
 
 main :: IO ()
 main = defaultMainWithHooks simpleUserHooks { preBuild = calGenHook }
