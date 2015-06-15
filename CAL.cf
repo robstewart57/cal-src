@@ -12,9 +12,9 @@ comment "/*" "*/" ;
 
 entrypoints Actor, Unit ;
 
-ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [VarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\nend" ;
-Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [VarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\n\nend" ;
-ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [VarDecl] [AnAction] ActionSchedule [PriorityBlock] "end" ;
+ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\nend" ;
+Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\n\nend" ;
+ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [AnAction] ActionSchedule [PriorityBlock] "end" ;
 
 PathN. PathName ::= [PName] ";" ;
 PNameCons. PName ::= Ident;
@@ -61,10 +61,16 @@ UPrcDecl. UnitDecl ::= ProcDecl ;
 UConstVarDecl. UnitDecl ::= ConstantVarDecl ;
 terminator nonempty UnitDecl ";";
 
+LocVarDecl. LocalVarDecl ::= VarDecl;
+separator LocalVarDecl "," ;
+
+GlobVarDecl. GlobalVarDecl ::= VarDecl;
+terminator GlobalVarDecl ";" ;
+
 VDecl. VarDecl ::= Type Ident [BracketedExp] ;
 VDeclExpIMut. VarDecl ::= Type Ident [BracketedExp] "=" Exp ;
 VDeclExpMut. VarDecl ::= Type Ident [BracketedExp] ":=" Exp ;
-terminator VarDecl ";" ; -- does this fit with the CAL spec?
+-- terminator VarDecl ";" ; -- does this fit with the CAL spec?
 
 {- TODO: StateVarDecl is not used anywhere else in the spec -}
 {- SVarDecl. StateVarDecl ::= VarDecl ; -}
@@ -141,7 +147,9 @@ StrLitExpr. ExpLiteral ::= StringLiteral ;
 TrueLitExpr. ExpLiteral ::= "true" ;
 FalseLitExpr. ExpLiteral ::= "flase" ;
 
-IndExpr. IndexerExpr ::= Ident "[" Exp "]" BracketedExp ;
+{- NOTE: changed to second version -}
+-- IndExpr. IndexerExpr ::= Ident "[" Exp "]" BracketedExp ;
+IndExpr. IndexerExpr ::= Ident BracketedExp ;
 
 IfExpr. IfExp ::= "if" Exp "then" Exp "else" Exp "end" ;
 
@@ -191,8 +199,8 @@ IfSt. IfStmt ::= "if" Exp "then" [Statement] "else" [Statement] "end" ;
 WhileSt. WhileStmt ::= "while" Exp "do" [Statement] "end" ;
 WhileVarsSt. WhileStmt ::= "while" Exp LocalVarsDecl"do" [Statement] "end" ;
 
-LocVarsDoDecl. LocalVarsDoDecl ::= "var" [VarDecl] "\ndo" ;
-LocVarsDecl. LocalVarsDecl ::= "var" [VarDecl] ;
+LocVarsDoDecl. LocalVarsDoDecl ::= "var" [LocalVarDecl] "\ndo" ;
+LocVarsDecl. LocalVarsDecl ::= "var" [LocalVarDecl] ;
 
 ForeachEmptySt. ForeachStmt ::= [ForeachGenerator] "do" "end" ;
 ForeachVarsSt. ForeachStmt ::= [ForeachGenerator] LocalVarsDecl "do" "end" ;
@@ -237,7 +245,7 @@ IActnTagStmt. InitializationAction ::= ActionTagDecl "initialize" InitializerHea
 
 InitHead. InitializerHead ::= "==>" [OutputExp] ;
 InitHeadGuard. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] ;
-InitHeadGuardVars. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] "var" [VarDecl] ;
+InitHeadGuardVars. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] "var" [LocalVarDecl] ;
 
 {- NOTE: this is ActionSchedule in spec -}
 SchedFSM. ActionSchedule ::= "schedule" Ident ":" [StateTransition] "end" ;
