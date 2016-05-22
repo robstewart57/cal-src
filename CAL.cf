@@ -206,7 +206,7 @@ ForeachEmptySt. ForeachStmt ::= [ForeachGenerator] "do" "end" ;
 ForeachVarsSt. ForeachStmt ::= [ForeachGenerator] LocalVarsDecl "do" "end" ;
 ForeachVarsStmtsSt. ForeachStmt ::= [ForeachGenerator] LocalVarsDecl "do" [Statement] "end" ;
 {- NOTE: I have added this beyond CAL spec -}
-ForeachStmtsSt. ForeachStmt ::= [ForeachGenerator] "do" [Statement] "end" ; 
+ForeachStmtsSt. ForeachStmt ::= [ForeachGenerator] "do" [Statement] "end" ;
 
 ForeachGen. ForeachGenerator ::= "foreach" Type Ident "in" Exp ;
 separator nonempty ForeachGenerator "," ;
@@ -276,7 +276,7 @@ BENEq. Exp2   ::= Exp2 "!=" Exp3;
 BELT. Exp2   ::= Exp2 "<" Exp3;
 BELTE. Exp2   ::= Exp2 "<=" Exp3;
 BEGT. Exp2   ::= Exp2 ">" Exp3;
-EGTE. Exp2   ::= Exp2 ">=" Exp3;
+BEGTE. Exp2   ::= Exp2 ">=" Exp3;
 BEAdd. Exp3   ::= Exp3 "+" Exp4;
 BEConc. Exp3   ::= Exp3 "++" Exp4;
 BENeg. Exp3   ::= Exp3 "-" Exp4;
