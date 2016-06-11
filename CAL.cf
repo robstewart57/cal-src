@@ -12,9 +12,13 @@ comment "/*" "*/" ;
 
 entrypoints Actor, Unit ;
 
-ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\nend" ;
-Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [AnAction] "\n" [PriorityBlock] "\n\nend" ;
-ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [AnAction] ActionSchedule [PriorityBlock] "end" ;
+ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\nend" ;
+Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\n\nend" ;
+ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
+
+ActionCode. CodeBlock ::= AnAction;
+UnitCode. CodeBlock ::= UnitDecl ";" ;
+terminator CodeBlock "" ;
 
 PathN. PathName ::= [PName] ";" ;
 PNameCons. PName ::= Ident;
