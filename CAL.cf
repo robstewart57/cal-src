@@ -97,8 +97,8 @@ FVarDecl. ExplicitVarDecl ::= "var" VarDecl ;
 
 PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "end" ;
 
-{- TODO: FormalPar is not specified in spec, what should it be? -}
-TmpPar. FormalPar ::= String;
+{- TODO: FormalPar is not specified in spec -}
+ArgPar. FormalPar ::= Type Ident;
 separator FormalPar "," ;
 
 {- TODO: what about unary expressions from D.6.5.4 ? -}
