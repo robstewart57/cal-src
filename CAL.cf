@@ -93,7 +93,7 @@ separator BracketedExp "" ;
 FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type ExplicitVarDecl ":" Exp "end" ;
 
 FNVarDecl. ExplicitVarDecl ::= ;
-FVarDecl. ExplicitVarDecl ::= "var" VarDecl ;
+FVarDecl. ExplicitVarDecl ::= "var" [LocalVarDecl] ;
 
 PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "end" ;
 
