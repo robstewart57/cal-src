@@ -66,7 +66,7 @@ Unt. Unit ::= "package" Ident ";\n"  [Import] "unit" Ident ":" [UnitDecl] "end" 
 
 UFunDecl. UnitDecl ::= FunctionDecl "\n" ;
 UPrcDecl. UnitDecl ::= ProcDecl "\n" ;
-UConstVarDecl. UnitDecl ::= ConstantVarDecl ;
+UConstVarDecl. UnitDecl ::= ConstantVarDecl ";\n" ;
 -- terminator nonempty UnitDecl ";";
 terminator nonempty UnitDecl "\n";
 
