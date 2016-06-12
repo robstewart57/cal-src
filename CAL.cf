@@ -21,7 +21,7 @@ ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")"
    relaxation of that constraint as the Orcc implementation
    does accept this -}
 ActionCode. CodeBlock ::= AnAction;
-UnitCode. CodeBlock ::= UnitDecl ";" ;
+UnitCode. CodeBlock ::= UnitDecl ;
 terminator CodeBlock "" ;
 
 PathN. PathName ::= [PName] ";" ;
@@ -64,10 +64,11 @@ TUint. ParamType ::= "uint" ;
 
 Unt. Unit ::= "package" Ident ";\n"  [Import] "unit" Ident ":" [UnitDecl] "end" ;
 
-UFunDecl. UnitDecl ::= FunctionDecl ;
-UPrcDecl. UnitDecl ::= ProcDecl ;
+UFunDecl. UnitDecl ::= FunctionDecl "\n" ;
+UPrcDecl. UnitDecl ::= ProcDecl "\n" ;
 UConstVarDecl. UnitDecl ::= ConstantVarDecl ;
-terminator nonempty UnitDecl ";";
+-- terminator nonempty UnitDecl ";";
+terminator nonempty UnitDecl "\n";
 
 LocVarDecl. LocalVarDecl ::= VarDecl;
 separator LocalVarDecl "," ;
