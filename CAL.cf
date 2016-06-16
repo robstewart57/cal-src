@@ -185,16 +185,16 @@ separator Statement "" ;
 AssignStt. SemiColonSeparatedStatement ::= AssignmentStmt ;
 CallStt. SemiColonSeparatedStatement ::= CallStmt ;
 BlockStt. SemiColonSeparatedStatement ::= BlockStmt ;
-IfStt. SemiColonSeparatedStatement ::= IfStmt ;
-WhileStt. SemiColonSeparatedStatement ::= WhileStmt ;
 
+IfStt. EndSeparatedStatement ::= IfStmt ;
+WhileStt. EndSeparatedStatement ::= WhileStmt ;
 ForEachStt. EndSeparatedStatement ::= ForeachStmt ;
 
 AssStmt. AssignmentStmt ::= Ident ":=" Exp ;
 AssStmtIdx. AssignmentStmt ::= Ident Index ":=" Exp ;
 {- NOTE: I have removed this, which is in spec, replacing with alternative rule -}
 -- Idx. Index ::= "[" [Exp] "]" BracketedExp ;
-Idx. Index ::= BracketedExp ;
+Idx. Index ::= [BracketedExp] ;
 
 CllStmt. CallStmt ::= ProcedureSymbol "(" [Exp] ")" ;
 ProcSymb. ProcedureSymbol ::= Ident ;
@@ -310,6 +310,6 @@ UEFoI. Exp7 ::= "float_of_int" "(" Exp7 ")" ;
 UEIoF. Exp7 ::= "int_of_float" "(" Exp7 ")" ;
 UEUIoF. Exp7 ::= "uint_of_float" "(" Exp7 ")" ;
 EIdent. Exp7 ::= Ident ;
-EIdentArr. Exp7 ::= Ident BracketedExp ;
+EIdentArr. Exp7 ::= Ident [BracketedExp] ;
 
 coercions Exp 7;
