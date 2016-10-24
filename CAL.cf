@@ -14,7 +14,7 @@ entrypoints Actor, Unit ;
 
 ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\nend" ;
 Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\n\nend" ;
-ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
+ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
 
 {- the spec does not support function and procedure
    declarations in an actor file, this therefore is a
@@ -71,7 +71,7 @@ UConstVarDecl. UnitDecl ::= ConstantVarDecl ";\n" ;
 terminator nonempty UnitDecl "\n";
 
 LocVarDecl. LocalVarDecl ::= VarDecl;
-separator LocalVarDecl "," ;
+separator LocalVarDecl ",\n" ;
 
 GlobVarDecl. GlobalVarDecl ::= VarDecl;
 terminator GlobalVarDecl ";" ;
@@ -91,16 +91,16 @@ ConstVarDecl. ConstantVarDecl ::= Type Ident "=" Exp ;
 BExp. BracketedExp ::= "[" Exp "]" ;
 separator BracketedExp "" ;
 
-FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type ExplicitVarDecl ":" Exp "end" ;
+FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type "\n" ExplicitVarDecl ":\n" Exp "\n end\n" ;
 
 FNVarDecl. ExplicitVarDecl ::= ;
 FVarDecl. ExplicitVarDecl ::= "var" [LocalVarDecl] ;
 
-PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "end" ;
+PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "\n end\n" ;
 
 {- TODO: FormalPar is not specified in spec -}
 ArgPar. FormalPar ::= Type Ident;
-separator FormalPar "," ;
+separator FormalPar ",\n" ;
 
 {- TODO: what about unary expressions from D.6.5.4 ? -}
 {- TODO: BinaryExp is not explicit in spec -}
@@ -224,16 +224,16 @@ AnActn. AnAction ::= Action ;
 InitActn. AnAction ::= InitializationAction ;
 separator AnAction "" ;
 
-Actn. Action ::= "action" ActionHead "end" ;
-ActnTags. Action ::= ActionTagDecl "action" ActionHead "end" ;
-ActnTagsStmts. Action ::= ActionTagDecl "action" ActionHead "do" [Statement] "end" ;
+Actn. Action ::= "action" ActionHead "end\n" ;
+ActnTags. Action ::= ActionTagDecl "action" ActionHead "end\n" ;
+ActnTagsStmts. Action ::= ActionTagDecl "action" ActionHead "do" [Statement] "end\n" ;
 
 ActnTagDecl. ActionTagDecl ::= [Ident] ":" ;
 
-ActnHead. ActionHead ::= [InputPattern] "==>" [OutputExp] ;
-ActnHeadGuarded. ActionHead ::= [InputPattern] "==>" [OutputExp] "guard" [Exp];
-ActnHeadVars. ActionHead ::= [InputPattern] "==>" [OutputExp] LocalVarsDecl ;
-ActnHeadGuardedVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "guard" [Exp] LocalVarsDecl ;
+ActnHead. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" ;
+ActnHeadGuarded. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" "guard" [Exp] "\n";
+ActnHeadVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" LocalVarsDecl "\n" ;
+ActnHeadGuardedVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" "guard" [Exp] "\n" LocalVarsDecl "\n" ;
 
 InPattTag. InputPattern ::= Ident ":" ;
 InPattTagIds. InputPattern ::= Ident ":" "[" [Ident] "]" ;
@@ -261,14 +261,14 @@ InitHeadGuard. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] ;
 InitHeadGuardVars. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] "var" [LocalVarDecl] ;
 
 {- NOTE: this is ActionSchedule in spec -}
-SchedFSM. ActionSchedule ::= "schedule" Ident ":" [StateTransition] "end" ;
-SchedfsmFSM. ActionSchedule ::= "schedule" "fsm" Ident ":" [StateTransition] "end" ;
+SchedFSM. ActionSchedule ::= "schedule" Ident ":\n" [StateTransition] "end" ;
+SchedfsmFSM. ActionSchedule ::= "schedule" "fsm" Ident ":\n" [StateTransition] "end" ;
 
 StTrans. StateTransition ::= Ident "(" Ident ")" "-->" Ident ;
 terminator StateTransition ";" ;
 
 {- NOTE: this is PriorityOrder in spec -}
-PriOrd. PriorityBlock ::= "priority" [PriorityInequality] "end" ;
+PriOrd. PriorityBlock ::= "priority\n" [PriorityInequality] "end" ;
 PriInEQ. PriorityInequality ::= Ident ">" Ident [OptActTag] ;
 separator PriorityBlock "" ;
 
