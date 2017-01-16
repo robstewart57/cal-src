@@ -12,9 +12,9 @@ comment "/*" "*/" ;
 
 entrypoints Actor, Unit ;
 
-ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\nend" ;
-Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] "\n" [CodeBlock] "\n" [PriorityBlock] "\n\nend" ;
-ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":\n" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
+ActrNoPkg. Actor ::= [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
+Actr. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] "" [CodeBlock] "" [PriorityBlock] "end" ;
+ActrSchd. Actor ::= "package" PathName [Import] "actor" Ident "(" [ActorPar] ")" IOSig ":" [GlobalVarDecl] [CodeBlock] ActionSchedule [PriorityBlock] "end" ;
 
 {- the spec does not support function and procedure
    declarations in an actor file, this therefore is a
@@ -24,7 +24,7 @@ ActionCode. CodeBlock ::= AnAction;
 UnitCode. CodeBlock ::= UnitDecl ;
 terminator CodeBlock "" ;
 
-PathN. PathName ::= [PName] ";" ;
+PathN. PathName ::= [PName] ";\n" ;
 PNameCons. PName ::= Ident;
 (:[]). [PName] ::= PName;
 (:). [PName] ::= PName "." [PName];
@@ -33,7 +33,7 @@ separator nonempty Ident ",";
 
 Imprt. Import ::= "import" [Ident];
 ImprtWC. Import ::= "import" [Ident] ".*";
-terminator Import ";" ;
+terminator Import ";\n" ;
 
 ActrPar. ActorPar ::= Type Ident EqualsExp ;
 separator ActorPar ",";
@@ -64,22 +64,22 @@ TUint. ParamType ::= "uint" ;
 
 Unt. Unit ::= "package" Ident ";\n"  [Import] "unit" Ident ":" [UnitDecl] "end" ;
 
-UFunDecl. UnitDecl ::= FunctionDecl "\n" ;
-UPrcDecl. UnitDecl ::= ProcDecl "\n" ;
+UFunDecl. UnitDecl ::= FunctionDecl "" ;
+UPrcDecl. UnitDecl ::= ProcDecl "" ;
 UConstVarDecl. UnitDecl ::= ConstantVarDecl ";\n" ;
--- terminator nonempty UnitDecl ";";
-terminator nonempty UnitDecl "\n";
+-- terminator nonempty UnitDecl ";\n";
+terminator nonempty UnitDecl "";
 
 LocVarDecl. LocalVarDecl ::= VarDecl;
-separator LocalVarDecl ",\n" ;
+separator LocalVarDecl "," ;
 
 GlobVarDecl. GlobalVarDecl ::= VarDecl;
-terminator GlobalVarDecl ";" ;
+terminator GlobalVarDecl ";\n" ;
 
 VDecl. VarDecl ::= Type Ident [BracketedExp] ;
 VDeclExpIMut. VarDecl ::= Type Ident [BracketedExp] "=" Exp ;
 VDeclExpMut. VarDecl ::= Type Ident [BracketedExp] ":=" Exp ;
--- terminator VarDecl ";" ; -- does this fit with the CAL spec?
+-- terminator VarDecl ";\n" ; -- does this fit with the CAL spec?
 
 {- TODO: StateVarDecl is not used anywhere else in the spec -}
 {- SVarDecl. StateVarDecl ::= VarDecl ; -}
@@ -91,16 +91,16 @@ ConstVarDecl. ConstantVarDecl ::= Type Ident "=" Exp ;
 BExp. BracketedExp ::= "[" Exp "]" ;
 separator BracketedExp "" ;
 
-FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type "\n" ExplicitVarDecl ":\n" Exp "\n end\n" ;
+FDecl. FunctionDecl ::= "function" Ident "(" [FormalPar] ")" "-->" Type "" ExplicitVarDecl ":" Exp " end" ;
 
 FNVarDecl. ExplicitVarDecl ::= ;
 FVarDecl. ExplicitVarDecl ::= "var" [LocalVarDecl] ;
 
-PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] "\n end\n" ;
+PDecl. ProcDecl ::= "procedure" Ident "(" [FormalPar] ")" ExplicitVarDecl "begin" [Statement] " end" ;
 
 {- TODO: FormalPar is not specified in spec -}
 ArgPar. FormalPar ::= Type Ident;
-separator FormalPar ",\n" ;
+separator FormalPar "," ;
 
 {- TODO: what about unary expressions from D.6.5.4 ? -}
 {- TODO: BinaryExp is not explicit in spec -}
@@ -125,7 +125,6 @@ IfExpCons. Exp ::= IfExp ;
 BrExpCons. Exp ::= "(" Exp ")" ;
 IndSExpCons. Exp ::= IndexerExpr ;
 IdBrSExpCons. Exp ::= Ident "(" [Exp] ")" ;
-LitExpCons. Exp ::= ExpLiteral ;
 
 {- TODO: SimpleExp is not defined in spec -}
 {- TmpSimp. SimpleExp ::= ?  ; -}
@@ -178,7 +177,7 @@ separator Generator "," ;
 
 GuardExpr. GuardExp ::= "|" Exp ;
 
-SemiColonSeparatedStmt. Statement ::= SemiColonSeparatedStatement ";" ;
+SemiColonSeparatedStmt. Statement ::= SemiColonSeparatedStatement ";\n" ;
 EndSeparatedStmt. Statement ::= EndSeparatedStatement ;
 separator Statement "" ;
 
@@ -208,7 +207,7 @@ IfSt. IfStmt ::= "if" Exp "then" [Statement] "else" [Statement] "end" ;
 WhileSt. WhileStmt ::= "while" Exp "do" [Statement] "end" ;
 WhileVarsSt. WhileStmt ::= "while" Exp LocalVarsDecl"do" [Statement] "end" ;
 
-LocVarsDoDecl. LocalVarsDoDecl ::= "var" [LocalVarDecl] "\ndo" ;
+LocVarsDoDecl. LocalVarsDoDecl ::= "var" [LocalVarDecl] "do" ;
 LocVarsDecl. LocalVarsDecl ::= "var" [LocalVarDecl] ;
 
 ForeachEmptySt. ForeachStmt ::= [ForeachGenerator] "do" "end" ;
@@ -224,16 +223,16 @@ AnActn. AnAction ::= Action ;
 InitActn. AnAction ::= InitializationAction ;
 separator AnAction "" ;
 
-Actn. Action ::= "action" ActionHead "end\n" ;
-ActnTags. Action ::= ActionTagDecl "action" ActionHead "end\n" ;
-ActnTagsStmts. Action ::= ActionTagDecl "action" ActionHead "do" [Statement] "end\n" ;
+Actn. Action ::= "action" ActionHead "end" ;
+ActnTags. Action ::= ActionTagDecl "action" ActionHead "end" ;
+ActnTagsStmts. Action ::= ActionTagDecl "action" ActionHead "do" [Statement] "end" ;
 
 ActnTagDecl. ActionTagDecl ::= [Ident] ":" ;
 
-ActnHead. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" ;
-ActnHeadGuarded. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" "guard" [Exp] "\n";
-ActnHeadVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" LocalVarsDecl "\n" ;
-ActnHeadGuardedVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "\n" "guard" [Exp] "\n" LocalVarsDecl "\n" ;
+ActnHead. ActionHead ::= [InputPattern] "==>" [OutputExp] "" ;
+ActnHeadGuarded. ActionHead ::= [InputPattern] "==>" [OutputExp] "" "guard" [Exp] "";
+ActnHeadVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "" LocalVarsDecl "" ;
+ActnHeadGuardedVars. ActionHead ::= [InputPattern] "==>" [OutputExp] "" "guard" [Exp] "" LocalVarsDecl "" ;
 
 InPattTag. InputPattern ::= Ident ":" ;
 InPattTagIds. InputPattern ::= Ident ":" "[" [Ident] "]" ;
@@ -261,21 +260,21 @@ InitHeadGuard. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] ;
 InitHeadGuardVars. InitializerHead ::= "==>" [OutputExp] "guard" [Exp] "var" [LocalVarDecl] ;
 
 {- NOTE: this is ActionSchedule in spec -}
-SchedFSM. ActionSchedule ::= "schedule" Ident ":\n" [StateTransition] "end" ;
-SchedfsmFSM. ActionSchedule ::= "schedule" "fsm" Ident ":\n" [StateTransition] "end" ;
+SchedFSM. ActionSchedule ::= "schedule" Ident ":" [StateTransition] "end" ;
+SchedfsmFSM. ActionSchedule ::= "schedule" "fsm" Ident ":" [StateTransition] "end" ;
 
 StTrans. StateTransition ::= Ident "(" Ident ")" "-->" Ident ;
-terminator StateTransition ";" ;
+terminator StateTransition ";\n" ;
 
 {- NOTE: this is PriorityOrder in spec -}
-PriOrd. PriorityBlock ::= "priority\n" [PriorityInequality] "end" ;
+PriOrd. PriorityBlock ::= "priority" [PriorityInequality] "end" ;
 PriInEQ. PriorityInequality ::= Ident ">" Ident [OptActTag] ;
 separator PriorityBlock "" ;
 
 OpActTg. OptActTag ::= ">" Ident ;
 separator OptActTag "";
 
-terminator PriorityInequality ";" ;
+terminator PriorityInequality ";\n" ;
 
 {- binary operations -}
 BEAnd. Exp   ::= Exp "and" Exp2;
@@ -311,5 +310,6 @@ UEIoF. Exp7 ::= "int_of_float" "(" Exp7 ")" ;
 UEUIoF. Exp7 ::= "uint_of_float" "(" Exp7 ")" ;
 EIdent. Exp7 ::= Ident ;
 EIdentArr. Exp7 ::= Ident [BracketedExp] ;
+LitExpCons. Exp7 ::= ExpLiteral ;
 
 coercions Exp 7;
