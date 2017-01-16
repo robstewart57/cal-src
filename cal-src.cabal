@@ -15,6 +15,7 @@ executable TestCAL
   main-is:           TestCAL.hs
   build-depends:     base >= 4.8 && <= 5.0
                    , array
+                   , cal-src
                      
 library
   exposed-modules:     AbsCAL
