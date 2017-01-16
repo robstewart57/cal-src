@@ -11,6 +11,11 @@ build-type:          Custom
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
+executable TestCAL
+  main-is:           TestCAL.hs
+  build-depends:     base >= 4.8 && <= 5.0
+                   , array
+                     
 library
   exposed-modules:     AbsCAL
                      , LexCAL
