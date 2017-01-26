@@ -15,4 +15,6 @@ calGenHook _ _ = do
   --
   -- For this reason, this is currently not in a fit state for hackage.
   void $ createProcess (proc "bnfc" ["-m","--haskell","CAL.cf"])
+  void $ createProcess (proc "happy" ["-gca","ParCAL.y"])
+  void $ createProcess (proc "alex" ["-g","LexCAL.x"])
   return emptyHookedBuildInfo
