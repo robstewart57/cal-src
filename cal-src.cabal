@@ -29,7 +29,4 @@ library
                      , BNFC
                      , array
 
-  build-tools:         alex >= 3.2.1,
-                       happy
-                     
   default-language:    Haskell2010
