@@ -242,7 +242,7 @@ separator InputPattern "," ;
 {- NOTE: defined as OutputPattern in spec -}
 OutPattTag. OutputExp ::= Ident ":" ;
 OutPattTagIds. OutputExp ::= Ident ":" "[" [OutToken] "]" ;
-OutPattTagIdsRepeat. OutputExp ::= Ident ":" "[" [Ident] "]" RepeatClause ;
+OutPattTagIdsRepeat. OutputExp ::= Ident ":" "[" [OutToken] "]" RepeatClause ;
 separator OutputExp "," ;
 
 {- NOTE: I find the following addition of exps in out tokens, not in spec -}
